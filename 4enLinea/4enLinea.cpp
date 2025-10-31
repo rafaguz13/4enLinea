@@ -34,6 +34,7 @@ void limpiarTabla() {
     }
 }
 
+//Misma que en el gato solo ampliamos el rango de la matriz
 bool casillasDisponibles() {
     for (int fila = 0; fila < 6; ++fila) {
         for (int col = 0; col < 7; ++col) {
