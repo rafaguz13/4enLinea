@@ -120,39 +120,66 @@ void CaidaDeFicha(char c, int row, int columna) {
 }
 
 char jugar() {
-    int fila, columna, opc;
+    int opc;
+    bool fichacolocada;
+    while (true) {
+        fichacolocada = false;
         while (true) { //Ciclo para que no se seleccione una casilla ya utilizada
             while (true) {//Ciclo para no colocar un dato invalido
-                imprimirTabla();
-                //Cree una opcion para que en cualquier momento pueden colocar un 9 para que 
-                //se reinicie el juego y te mande al menu de salida
-                cout << "Ingrese un 9 en cualquier momento para reiniciar la partida...\n";
-                cout << "Jugador 1 elija su casilla, primero elija fila y despues columna (ejemplo 1 0)\n";
+                cout << "Jugador 1 elija la columna donde quiere jugar\n";
                 cin >> opc;
-                //Aqui comprobamos que si es 9 ya sea fila o columna se reinicie
-                if (opc == 9)
-                    return 'R';
                 if ((opc < 0 || opc>6))
                     cout << "Valores invalidos, vuelva a seleccionar\n";
                 else
                     break;
             }
-            //Comprobamos si la casilla seleccionada esta vacia entonces se coloca X
-            if (tabla[fila][columna] == ' ') {
-                CaidaDeFicha('X', fila, columna);
-                tabla[fila][columna] = 'X';
-                break;
-            } // Si no esta vacia entonces se muestra el error y volvemos a seleccionar
-            else {
-                cout << "Casilla tomada, vuelva a seleccionar\n";
+            for (int fila = 5; fila >= 0; --fila) {
+                if (tabla[fila][opc] == ' ') {
+                    tabla[fila][opc] = 'X';
+                    system("cls");
+                    imprimirTabla();
+                    fichacolocada = true;
+                    break;
+                }
             }
+            if (fichacolocada)
+                break;
+            system("cls");
+            imprimirTabla();
+            cout << "La columna esta llena, seleccione de nuevo\n";
         }
+        fichacolocada = false;
+            while (true) { //Ciclo para que no se seleccione una casilla ya utilizada
+                while (true) {//Ciclo para no colocar un dato invalido
+                    cout << "Jugador 2 elija la columna donde quiere jugar\n";
+                    cin >> opc;
+                    if ((opc < 0 || opc>6))
+                        cout << "Valores invalidos, vuelva a seleccionar\n";
+                    else
+                        break;
+                }
+                for (int fila = 5; fila >= 0; --fila) {
+                    if (tabla[fila][opc] == ' ') {
+                        tabla[fila][opc] = 'O';
+                        system("cls");
+                        imprimirTabla();
+                        fichacolocada = true;
+                        break;
+                    }
+                }
+                if (fichacolocada)
+                    break;
+                system("cls");
+                imprimirTabla();
+                cout << "La columna esta llena, seleccione de nuevo\n";
+        }
+    }
 }
 
 int main()
 {
     int resultado;
-    //imprimirTabla();
+    imprimirTabla();
     resultado = jugar();
 
     if (checaGanador('X'))
