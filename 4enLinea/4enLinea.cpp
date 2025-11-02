@@ -11,6 +11,28 @@ char tabla[6][7] = { {' ', ' ', ' ',' ', ' ', ' ', ' '},
                      {' ', ' ', ' ',' ', ' ', ' ', ' '},
                      {' ', ' ', ' ',' ', ' ', ' ', ' '} };
 
+int menu() {
+    int opc;
+    while (true) {
+        cout << "=========================================\n";
+        cout << "         BIENVENIDO A CONECTA 4          \n";
+        cout << "=========================================\n";
+        cout << " Un juego de estrategia para dos jugadores\n";
+        cout << " Gana quien conecte 4 fichas iguales      \n";
+        cout << " en linea horizontal, vertical o diagonal \n";
+        cout << "-----------------------------------------\n";
+        cout << " 1. Iniciar nuevo juego                   \n";
+        cout << " 2. Salir                                 \n";
+        cout << "=========================================\n";
+        cout << " Selecciona una opcion: ";
+        cin >> opc;
+        if ((opc < 1) || (opc > 3))
+            cout << "Opcion incorrecta, vuelve a seleccionar.\n";
+        else
+            return opc;
+    };
+}
+
 void imprimirTabla() {
     cout << "   0   1   2   3   4   5   6\n";
     for (int fila = 0; fila < 6; ++fila) {
@@ -96,6 +118,19 @@ bool checaGanador(char c) {
     return false;
 }
 
+bool checaEmpate() {
+    //Bool para comprobar si fue o no empate, si ya hay ganador pues entonces no hay empate por eso primero
+    // lo verifico
+    if (checaGanador('X') == true)
+        return false;
+    if (checaGanador('O') == true)
+        return false;
+    //Verificamos si aun hay casillas para hacer o no empate
+    if (casillasDisponibles() == true)
+        return false;
+    return true;
+}
+
 //Quiero hacer una funcion donde se vea "caer" la ficha que se coloque hasta el lugar más bajo disponible
 //Creo que con ciclos for parecidos a cuando imprimo la tabla puede funcionar
 //Esta mal todo, me fui con la idea de hacerlo como en el gato pero no es igual ya que aqui solo se seleccionara
@@ -148,6 +183,10 @@ char jugar() {
             imprimirTabla();
             cout << "La columna esta llena, seleccione de nuevo\n";
         }
+        if (checaEmpate())
+            return 'E';
+        if (checaGanador('X'))
+            return 'X';
         fichacolocada = false;
             while (true) { //Ciclo para que no se seleccione una casilla ya utilizada
                 while (true) {//Ciclo para no colocar un dato invalido
@@ -173,15 +212,67 @@ char jugar() {
                 imprimirTabla();
                 cout << "La columna esta llena, seleccione de nuevo\n";
         }
+     if (checaEmpate())
+        return 'E';
+     if (checaGanador('O'))
+        return 'O';
     }
+}
+
+//Funcion para felicitar al ganador
+void felicitarGanador(char jugador) {
+    cout << "\n==============================\n";
+    cout << "   ¡Felicidades Jugador " << (jugador == 'X' ? "1" : "2") << "! \n";
+    cout << "   ¡Has logrado conectar 4!\n";
+    cout << "==============================\n\n";
+}
+//Mensaje de empate
+void mensajeEmpate() {
+    cout << "===============================" << endl;
+    cout << "|                             |" << endl;
+    cout << "|         ¡EMPATE!            |" << endl;
+    cout << "|                             |" << endl;
+    cout << "|   El tablero está lleno     |" << endl;
+    cout << "|   y nadie logró ganar.      |" << endl;
+    cout << "|                             |" << endl;
+    cout << "|   ¡Gran juego de ambos!     |" << endl;
+    cout << "|                             |" << endl;
+    cout << "===============================" << endl;
+
 }
 
 int main()
 {
-    int resultado;
-    imprimirTabla();
-    resultado = jugar();
-
-    if (checaGanador('X'))
-        cout << "Ya tenemos un ganador";
+    int modo,opc,resultado;
+    while (true) {
+        opc = menu();
+        imprimirTabla();
+        if (opc == 1) {
+            resultado = jugar();
+            if (resultado == 'X') {
+                system("cls");
+                imprimirTabla();
+                felicitarGanador('X');
+            }
+            else if (resultado == 'O') {
+                system("cls");
+                imprimirTabla();
+                felicitarGanador('O');
+            }
+            else if (resultado == 'E') {
+                system("cls");
+                imprimirTabla();
+                mensajeEmpate();
+            }
+        }
+        else
+            return 0;
+        cout << "Quieres volver a jugar (1-si 2-no) ?\n";
+        cin >> modo;
+        if (modo == 2)
+            break;
+        else
+            system("cls");
+        limpiarTabla();
+    }
 }
