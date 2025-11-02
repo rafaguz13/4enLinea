@@ -3,6 +3,7 @@
 #include <sstream>
 #include <cstdlib>
 #include <ctime>
+#include <Windows.h>
 using namespace std;
 char tabla[6][7] = { {' ', ' ', ' ',' ', ' ', ' ', ' '},
                      {' ', ' ', ' ',' ', ' ', ' ', ' '},
@@ -131,26 +132,15 @@ bool checaEmpate() {
     return true;
 }
 
-//Quiero hacer una funcion donde se vea "caer" la ficha que se coloque hasta el lugar más bajo disponible
-//Creo que con ciclos for parecidos a cuando imprimo la tabla puede funcionar
-//Esta mal todo, me fui con la idea de hacerlo como en el gato pero no es igual ya que aqui solo se seleccionara
-//la columna, no fila y columna y pues la idea que tenia en mente ya no funciona asi que hay que descartarlo
-//y volver a pensar en como hacerlo de nuevo
+
 void CaidaDeFicha(char c, int row, int columna) {
     system("cls");
-    cout << "   0   1   2   3   4   5   6\n";
-    for (int fila = 0; fila < 6; ++fila) {
-        cout << fila << " ";
-        for (int col = 0; col < 7; ++col) {
-            if (fila == row)
-                cout << " " << tabla[row][columna];;
-            cout << " " << tabla[fila][col];
-            if (fila == row)
-                tabla[fila][col] = ' ';
-            if (col < 6) cout << " |";
-        }
-        cout << "\n";
-        if (fila < 7) cout << "  ---+---+---+---+---+---+---\n";
+    for (int i = 0; i <= row; i++) {
+        tabla[i][columna] = c;
+        imprimirTabla();
+        tabla[i][columna] = ' ';
+        Sleep(250);
+        system("cls");
     }
 }
 
@@ -170,6 +160,7 @@ char jugar() {
             }
             for (int fila = 5; fila >= 0; --fila) {
                 if (tabla[fila][opc] == ' ') {
+                    CaidaDeFicha('X', fila, opc);
                     tabla[fila][opc] = 'X';
                     system("cls");
                     imprimirTabla();
@@ -199,6 +190,7 @@ char jugar() {
                 }
                 for (int fila = 5; fila >= 0; --fila) {
                     if (tabla[fila][opc] == ' ') {
+                        CaidaDeFicha('O', fila, opc);
                         tabla[fila][opc] = 'O';
                         system("cls");
                         imprimirTabla();
@@ -246,6 +238,7 @@ int main()
     int modo,opc,resultado;
     while (true) {
         opc = menu();
+        system("cls");
         imprimirTabla();
         if (opc == 1) {
             resultado = jugar();
