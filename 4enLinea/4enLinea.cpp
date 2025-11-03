@@ -5,6 +5,7 @@
 #include <ctime>
 #include <Windows.h>
 using namespace std;
+//Declare la tabla global para que no sea necesario que la tenga que estar enviando a todas las funciones que la utilicen
 char tabla[6][7] = { {' ', ' ', ' ',' ', ' ', ' ', ' '},
                      {' ', ' ', ' ',' ', ' ', ' ', ' '},
                      {' ', ' ', ' ',' ', ' ', ' ', ' '},
@@ -12,6 +13,7 @@ char tabla[6][7] = { {' ', ' ', ' ',' ', ' ', ' ', ' '},
                      {' ', ' ', ' ',' ', ' ', ' ', ' '},
                      {' ', ' ', ' ',' ', ' ', ' ', ' '} };
 
+//Creamos un menu sencillo para el juego
 int menu() {
     int opc;
     while (true) {
@@ -34,6 +36,7 @@ int menu() {
     };
 }
 
+//Funcion para estar imprimiendo la tabla en pantalla
 void imprimirTabla() {
     cout << "   0   1   2   3   4   5   6\n";
     for (int fila = 0; fila < 6; ++fila) {
@@ -48,6 +51,7 @@ void imprimirTabla() {
 
 }
 
+//Funcion para cuando se requiera jugar de nuevo y se tenga que limpiar la tabla
 void limpiarTabla() {
     //Es basciamente un barrido donde en cada dato de la matriz se colo un " " para que quede vacia
     for (int fila = 0; fila < 6; ++fila) {
@@ -58,6 +62,7 @@ void limpiarTabla() {
 }
 
 //Misma que en el gato solo ampliamos el rango de la matriz
+//Verificamos que aun haya espacios disponibles en la tabla
 bool casillasDisponibles() {
     for (int fila = 0; fila < 6; ++fila) {
         for (int col = 0; col < 7; ++col) {
@@ -68,11 +73,10 @@ bool casillasDisponibles() {
     return false;
 }
 
+//Utilice ciclos for para poder hacer las comprobaciones en cuando a si ya alguien cumplio con las 4 en linea, tnato horizontales como verticales y diagonales
+//Es bool ya que si no se cumple ninguno regresa un false que significa que no hay un ganador aun
 bool checaGanador(char c) {
     // Horizontal
-    //Utilizare ciclos for para verificar si se cumplen los 4 caracteres en linea
-    //Con las comprobaciones que realice si jala bien los resultados, tocara esperar a ver cuando
-    //cree las funciones para ingresar los datos manualmente...
     for (int fila = 0; fila < 6; fila++) {
         for (int col = 0; col <= 3; col++) {
             if (tabla[fila][col] == c &&
@@ -132,23 +136,24 @@ bool checaEmpate() {
     return true;
 }
 
-
+//Esta funcion lo que hace es basicamente dibujar o hacer la animacion que cuando se selecciona una columna se vea como va cayendo la ficha hasta la posiciones que debe de ir
 void CaidaDeFicha(char c, int row, int columna) {
     system("cls");
     for (int i = 0; i <= row; i++) {
-        tabla[i][columna] = c;
-        imprimirTabla();
-        tabla[i][columna] = ' ';
-        Sleep(250);
+        tabla[i][columna] = c; //Le damos el valor a la casilla
+        imprimirTabla();       //Imprimimos la tabla para que se vea
+        tabla[i][columna] = ' ';//Luego quitamos el valor de la casilla para que de el efecto de caida
+        Sleep(250);             //Esta linea hace que el juego espere 250 milisegundos para pasar a la siguiente linea y eso hace que se cree la "animacion" de caer
         system("cls");
     }
 }
 
+//Funcion donde se jugara
 char jugar() {
     int opc;
     bool fichacolocada;
-    while (true) {
-        fichacolocada = false;
+    while (true) { //Ciclo para que se siga jugando mientras el jugador no seleccione salir
+        fichacolocada = false; //Esta variable la usaremos para poder salir del ciclo siguiente ya que si no se quedaba ciclado por la posiciones de los break
         while (true) { //Ciclo para que no se seleccione una casilla ya utilizada
             while (true) {//Ciclo para no colocar un dato invalido
                 cout << "Jugador 1 elija la columna donde quiere jugar\n";
@@ -160,24 +165,26 @@ char jugar() {
             }
             for (int fila = 5; fila >= 0; --fila) {
                 if (tabla[fila][opc] == ' ') {
-                    CaidaDeFicha('X', fila, opc);
-                    tabla[fila][opc] = 'X';
+                    CaidaDeFicha('X', fila, opc); //Una vez que se selecciona la columna primero hacemos el efecto de caida de la ficha
+                    tabla[fila][opc] = 'X'; //Despues ya colocamos la ficha en la ultima opcion disponible
                     system("cls");
                     imprimirTabla();
                     fichacolocada = true;
                     break;
                 }
             }
-            if (fichacolocada)
+            if (fichacolocada) //Si ya se coloco una ficha entonces salimos del ciclo para irnos al turno del jugador 2
                 break;
             system("cls");
             imprimirTabla();
             cout << "La columna esta llena, seleccione de nuevo\n";
         }
+        //Verificamos si hay empate o si ya tenemos un ganador
         if (checaEmpate())
             return 'E';
         if (checaGanador('X'))
             return 'X';
+        //Esto es basicamente el codigo de arriba pero oritentado al jugador 2 'O'
         fichacolocada = false;
             while (true) { //Ciclo para que no se seleccione una casilla ya utilizada
                 while (true) {//Ciclo para no colocar un dato invalido
@@ -224,8 +231,8 @@ void mensajeEmpate() {
     cout << "|                             |" << endl;
     cout << "|         ¡EMPATE!            |" << endl;
     cout << "|                             |" << endl;
-    cout << "|   El tablero está lleno     |" << endl;
-    cout << "|   y nadie logró ganar.      |" << endl;
+    cout << "|   El tablero esta lleno     |" << endl;
+    cout << "|   y nadie logro ganar.      |" << endl;
     cout << "|                             |" << endl;
     cout << "|   ¡Gran juego de ambos!     |" << endl;
     cout << "|                             |" << endl;
@@ -233,10 +240,12 @@ void mensajeEmpate() {
 
 }
 
+//Funcion main donde se mandara a llamar a los demas funciones para que se pueda realizar el juego, trate de que fuese lo más compacto disponible modularizando todas las funciones
+//que pude, para asi poder utilizarlas despues como lo hice con el proyecto anterior, que tome funciones y las adapte a este nuevo proyecto
 int main()
 {
     int modo,opc,resultado;
-    while (true) {
+    while (true) { //While para que se siga repitiendo mientras el jugador pida volver a jugar
         opc = menu();
         system("cls");
         imprimirTabla();
